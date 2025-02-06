@@ -3,11 +3,15 @@ FROM centos:7
 ARG USER_ID=14
 ARG GROUP_ID=50
 
-MAINTAINER Fer Uria <fauria@gmail.com>
+MAINTAINER Vodkaa <vodkaa@vodkaa.dev>
 LABEL Description="vsftpd Docker image based on Centos 7. Supports passive mode and virtual users." \
 	License="Apache License 2.0" \
-	Usage="docker run -d -p [HOST PORT NUMBER]:21 -v [HOST FTP HOME]:/home/vsftpd fauria/vsftpd" \
+	Usage="docker run -d -p [HOST PORT NUMBER]:1999 -v [HOST FTP HOME]:/home/vsftpd vodkaa/vsftpd" \
 	Version="1.0"
+
+RUN sed -i s/mirror.centos.org/vault.centos.org/g /etc/yum.repos.d/CentOS-*.repo
+RUN sed -i s/^#.*baseurl=http/baseurl=http/g /etc/yum.repos.d/CentOS-*.repo
+RUN sed -i s/^mirrorlist=http/#mirrorlist=http/g /etc/yum.repos.d/CentOS-*.repo
 
 RUN yum -y update && yum clean all
 RUN yum install -y \
@@ -45,6 +49,6 @@ RUN chown -R ftp:ftp /home/vsftpd/
 VOLUME /home/vsftpd
 VOLUME /var/log/vsftpd
 
-EXPOSE 20 21
+EXPOSE 1998 1999
 
 CMD ["/usr/sbin/run-vsftpd.sh"]
